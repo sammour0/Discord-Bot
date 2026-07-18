@@ -1,0 +1,10 @@
+{
+  "YOUR_GUILD_ID": {
+    "adhkarEnabled": true,
+    "adhkarInterval": 15,
+    "channelId": "YOUR_CHANNEL_ID",
+    "mentionType": "everyone",
+    "dmPrayersEnabled": true,
+    "newsChannelId": "YOUR_NEWS_CHANNEL_ID"
+  }
+}

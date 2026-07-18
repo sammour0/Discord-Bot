@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+
+# Environment variables (containing Bot Token, Client ID, Guild ID)
+.env
+
+# Local settings and cache (containing Channel IDs, Guild IDs, User IDs)
+settings.json
+prayer_cache.json
+
+# OS files
+.DS_Store
+Thumbs.db
