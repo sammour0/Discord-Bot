@@ -39,6 +39,9 @@ const lastAdhkarAlerts = new Map();
 // Map of last hydration reminders per guild: guildId -> timestamp (ms)
 const lastHydrationAlerts = new Map();
 
+// Map of last Dua reminders per guild: guildId -> timestamp (ms)
+const lastDuaAlerts = new Map();
+
 // Global prayer times cache for today
 let todayTimings = null;
 let currentCachedDate = "";
@@ -155,6 +158,7 @@ client.once('ready', async () => {
     for (const guildId in allSettings) {
         lastAdhkarAlerts.set(guildId, now);
         lastHydrationAlerts.set(guildId, now);
+        lastDuaAlerts.set(guildId, now);
     }
 
     // Start Unified 1-Minute Scheduler Loop
@@ -251,6 +255,21 @@ function startSchedulerLoop() {
                     console.log(`[Scheduler] Triggering periodic Adhkar for guild ${guildId}`);
                     await sendPeriodicAdhkar(guildId);
                     lastAdhkarAlerts.set(guildId, now);
+                }
+            }
+        }
+
+        // 5.5 Check Periodic Duas for each guild
+        for (const guildId in allSettings) {
+            const guildSettings = getSettings(guildId);
+            if (guildSettings.channelId && guildSettings.duaEnabled && guildSettings.duaInterval > 0) {
+                const lastAlert = lastDuaAlerts.get(guildId) || now;
+                const diffMinutes = (now - lastAlert) / (1000 * 60);
+
+                if (diffMinutes >= guildSettings.duaInterval - 0.1) {
+                    console.log(`[Scheduler] Triggering periodic Dua for guild ${guildId}`);
+                    await sendPeriodicDua(guildId);
+                    lastDuaAlerts.set(guildId, now);
                 }
             }
         }
@@ -484,6 +503,29 @@ async function sendHydrationReminder(guildId) {
     channel.send({ content: `${mentionPrefix}💧 **Hydration Reminder**: ${message}`, embeds: [embed] }).catch(console.error);
 }
 
+// Send Periodic Dua
+async function sendPeriodicDua(guildId) {
+    const guildSettings = getSettings(guildId);
+    if (!guildSettings.channelId) return;
+
+    const channel = client.channels.cache.get(guildSettings.channelId);
+    if (!channel) return;
+
+    const pool = adhkar.duas;
+    const randomDua = pool[Math.floor(Math.random() * pool.length)];
+
+    const embed = new EmbedBuilder()
+        .setTitle('🤲 دعاء مستجاب | تذكير دوري')
+        .setDescription(`**${randomDua}**`)
+        .setColor('#1D8F6F')
+        .setFooter({ text: `تذكير كل ${guildSettings.duaInterval} دقائق | استخدم /setduainterval لتغييره` });
+
+    const mentionText = await getMentionText(guildId, guildSettings.mentionType);
+    const mentionPrefix = mentionText ? `${mentionText} ` : "";
+
+    channel.send({ content: `${mentionPrefix}🤲 **دعاء مستجاب**: ${randomDua}`, embeds: [embed] }).catch(console.error);
+}
+
 // Helper: Update Bot Presence based on active voice sessions
 function updatePresence() {
     let activeSession = null;
@@ -563,7 +605,7 @@ client.on('interactionCreate', async interaction => {
             .setTitle('📖 دليل استخدام بوت الأذكار ومواقيت الصلاة')
             .setDescription('أهلاً بك! هذا البوت مخصص لتذكيرك بمواقيت الصلاة في عمان، الأردن، وقراءة الأذكار، وتشغيل القرآن الكريم، والتذكير بشرب الماء.')
             .addFields(
-                { name: '⚙️ الإعدادات (Setup)', value: '`/setchannel` - لتحديد القناة النصية لإرسال التذكيرات (مهم جداً)\n`/setinterval` - لتحديد وقت تذكير الأذكار بالدقائق (مثلاً كل 10 دقائق)\n`/sethydration` - لتحديد وقت التذكير بشرب الماء بالدقائق (مثلاً كل 60 دقيقة)\n`/setmention` - لتحديد نوع الإشارة للمجموعات (@everyone, @here, none)\n`/togglealldms` - لتفعيل/تعطيل إرسال رسائل خاصة لجميع الأعضاء عند الصلاة (للإدارة)' },
+                { name: '⚙️ الإعدادات (Setup)', value: '`/setchannel` - لتحديد القناة النصية لإرسال التذكيرات (مهم جداً)\n`/setinterval` - لتحديد وقت تذكير الأذكار بالدقائق (مثلاً كل 10 دقائق)\n`/setduainterval` - لتحديد وقت تذكير الأدعية بالدقائق (مثلاً كل 15 دقيقة)\n`/sethydration` - لتحديد وقت التذكير بشرب الماء بالدقائق (مثلاً كل 60 دقيقة)\n`/setmention` - لتحديد نوع الإشارة للمجموعات (@everyone, @here, none)\n`/togglealldms` - لتفعيل/تعطيل إرسال رسائل خاصة لجميع الأعضاء عند الصلاة (للإدارة)' },
                 { name: '🕌 الصلاة والأذكار والأدعية (Prayer, Adhkar & Duas)', value: '`/prayer` - لعرض مواقيت الصلاة اليوم في عمان\n`/adhkar` - لإرسال ذكر عشوائي فوراً\n`/dua` - لإرسال دعاء عشوائي فوراً\n`/hydration` - لتذكير بشرب الماء فوراً\n`/remindme` - للاشتراك/إلغاء الاشتراك في التذكير بالصلاة عبر الرسائل الخاصة (شخصي)' },
                 { name: '🔊 تشغيل القرآن (Play Quran)', value: '`/playquran` - لتشغيل القرآن بصوت قارئ محدد في قناتك الصوتية. يمكنك تحديد رقم السورة (من 1 إلى 114) أو تركها فارغة لتشغيل البث المباشر 24/7.\n`/volume` - لتعديل مستوى الصوت (0-100)\n`/stop` - لإيقاف القراءة ومغادرة القناة الصوتية' }
             )
@@ -900,6 +942,29 @@ client.on('interactionCreate', async interaction => {
             lastHydrationAlerts.set(guildId, Date.now());
             
             return interaction.reply({ content: `✅ تم ضبط التذكير بشرب الماء الدوري كل **${minutes}** دقيقة.` });
+        }
+    }
+
+    // --- /setduainterval command ---
+    if (commandName === 'setduainterval') {
+        if (!interaction.member.permissions.has(PermissionFlagsBits.ManageChannels)) {
+            return interaction.reply({ content: '❌ يجب أن تمتلك صلاحية إدارة القنوات لاستخدام هذا الأمر. (You need Manage Channels permission)', ephemeral: true });
+        }
+
+        const minutes = interaction.options.getInteger('minutes');
+        
+        if (minutes === 0) {
+            saveSettings(guildId, 'duaEnabled', false);
+            saveSettings(guildId, 'duaInterval', 0);
+            return interaction.reply({ content: '✅ تم إيقاف تذكير الأدعية الدوري بنجاح.' });
+        } else {
+            saveSettings(guildId, 'duaEnabled', true);
+            saveSettings(guildId, 'duaInterval', minutes);
+            
+            // Reset countdown timer
+            lastDuaAlerts.set(guildId, Date.now());
+            
+            return interaction.reply({ content: `✅ تم ضبط التذكير بالأدعية الدورية كل **${minutes}** دقيقة.` });
         }
     }
 

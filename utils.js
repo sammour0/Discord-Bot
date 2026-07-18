@@ -11,6 +11,8 @@ const DEFAULT_SETTINGS = {
     adhkarEnabled: true,
     hydrationInterval: 60, // in minutes
     hydrationEnabled: true,
+    duaInterval: 15, // in minutes
+    duaEnabled: true,
     mentionType: 'everyone', // 'everyone', 'here', 'none'
     dmPrayersEnabled: false,
     dmSubscribers: [] // Array of user IDs

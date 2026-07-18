@@ -74,6 +74,7 @@ Once the bot is online, use these commands inside your Discord server:
 | `/help` | Displays a helpful user manual for the bot. |
 | `/setchannel` | Sets the text channel where prayer times, Adhkar, and hydration reminders will be posted. *(Requires Manage Channels permission)* |
 | `/setinterval` | Sets the Adhkar frequency in minutes (e.g. `/setinterval minutes:10`). Enter `0` to disable periodic reminders. *(Requires Manage Channels permission)* |
+| `/setduainterval` | Sets the Dua frequency in minutes (e.g. `/setduainterval minutes:15`). Enter `0` to disable periodic supplications. *(Requires Manage Channels permission)* |
 | `/sethydration` | Sets the Hydration reminder frequency in minutes (e.g. `/sethydration minutes:60`). Enter `0` to disable hydration reminders. *(Requires Manage Channels permission)* |
 | `/setmention` | Choose the mention type for announcements (`everyone`, `here`, or `none`). If you have a role named **`تذكير`**, selecting `everyone` will automatically mention the role instead of `@everyone`! *(Requires Manage Channels permission)* |
 | `/togglealldms` | Toggles whether the bot DMs every server member when a prayer time arrives. *(Requires Administrator permission)* |

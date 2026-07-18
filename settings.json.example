@@ -2,6 +2,8 @@
   "YOUR_GUILD_ID": {
     "adhkarEnabled": true,
     "adhkarInterval": 15,
+    "duaEnabled": true,
+    "duaInterval": 15,
     "channelId": "YOUR_CHANNEL_ID",
     "mentionType": "everyone",
     "dmPrayersEnabled": true,

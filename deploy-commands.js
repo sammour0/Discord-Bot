@@ -115,6 +115,17 @@ const commands = [
                 .setMinValue(0)
                 .setMaxValue(1440)
         ),
+
+    new SlashCommandBuilder()
+        .setName('setduainterval')
+        .setDescription('تعديل المدة الزمنية لتذكير الأدعية بالدقائق (Set periodic Dua/Supplication interval)')
+        .addIntegerOption(option => 
+            option.setName('minutes')
+                .setDescription('المدة بالدقائق، أدخل 0 لإيقاف التذكير (Interval in minutes, 0 to disable)')
+                .setRequired(true)
+                .setMinValue(0)
+                .setMaxValue(1440)
+        ),
         
     new SlashCommandBuilder()
         .setName('hydration')
