@@ -25,6 +25,10 @@ const commands = [
         .setDescription('إرسال ذكر عشوائي فوراً (Send a random Dhikr immediately)'),
         
     new SlashCommandBuilder()
+        .setName('dua')
+        .setDescription('إرسال دعاء عشوائي فوراً (Send a random Dua/Supplication immediately)'),
+        
+    new SlashCommandBuilder()
         .setName('setinterval')
         .setDescription('تعديل المدة الزمنية لتذكير الأذكار بالدقائق (Set periodic Adhkar interval)')
         .addIntegerOption(option => 

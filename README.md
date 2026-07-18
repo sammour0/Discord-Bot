@@ -80,6 +80,7 @@ Once the bot is online, use these commands inside your Discord server:
 | `/remindme` | Toggles personal prayer reminders in direct messages (DMs) for yourself (opt-in/opt-out). |
 | `/prayer` | Displays today's prayer times for Amman, Jordan in 12-hour AM/PM format. |
 | `/adhkar` | Sends a random dhikr/salawat immediately. |
+| `/dua` | Sends a random supplication/Dua immediately. |
 | `/hydration` | Sends a hydration break reminder immediately. |
 | `/playquran` | Joins your voice channel and plays Quran. Select a `reciter` (from 11 options). Optionally specify a `surah` (1-114). If `surah` is left empty, it plays the **24/7 Live Radio** stream. |
 | `/volume` | Sets the playback volume (0 to 100). |

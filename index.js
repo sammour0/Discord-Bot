@@ -564,7 +564,7 @@ client.on('interactionCreate', async interaction => {
             .setDescription('أهلاً بك! هذا البوت مخصص لتذكيرك بمواقيت الصلاة في عمان، الأردن، وقراءة الأذكار، وتشغيل القرآن الكريم، والتذكير بشرب الماء.')
             .addFields(
                 { name: '⚙️ الإعدادات (Setup)', value: '`/setchannel` - لتحديد القناة النصية لإرسال التذكيرات (مهم جداً)\n`/setinterval` - لتحديد وقت تذكير الأذكار بالدقائق (مثلاً كل 10 دقائق)\n`/sethydration` - لتحديد وقت التذكير بشرب الماء بالدقائق (مثلاً كل 60 دقيقة)\n`/setmention` - لتحديد نوع الإشارة للمجموعات (@everyone, @here, none)\n`/togglealldms` - لتفعيل/تعطيل إرسال رسائل خاصة لجميع الأعضاء عند الصلاة (للإدارة)' },
-                { name: '🕌 الصلاة والأذكار (Prayer & Adhkar)', value: '`/prayer` - لعرض مواقيت الصلاة اليوم في عمان\n`/adhkar` - لإرسال ذكر عشوائي فوراً\n`/hydration` - لتذكير بشرب الماء فوراً\n`/remindme` - للاشتراك/إلغاء الاشتراك في التذكير بالصلاة عبر الرسائل الخاصة (شخصي)' },
+                { name: '🕌 الصلاة والأذكار والأدعية (Prayer, Adhkar & Duas)', value: '`/prayer` - لعرض مواقيت الصلاة اليوم في عمان\n`/adhkar` - لإرسال ذكر عشوائي فوراً\n`/dua` - لإرسال دعاء عشوائي فوراً\n`/hydration` - لتذكير بشرب الماء فوراً\n`/remindme` - للاشتراك/إلغاء الاشتراك في التذكير بالصلاة عبر الرسائل الخاصة (شخصي)' },
                 { name: '🔊 تشغيل القرآن (Play Quran)', value: '`/playquran` - لتشغيل القرآن بصوت قارئ محدد في قناتك الصوتية. يمكنك تحديد رقم السورة (من 1 إلى 114) أو تركها فارغة لتشغيل البث المباشر 24/7.\n`/volume` - لتعديل مستوى الصوت (0-100)\n`/stop` - لإيقاف القراءة ومغادرة القناة الصوتية' }
             )
             .setColor('#1D8F6F')
@@ -654,6 +654,20 @@ client.on('interactionCreate', async interaction => {
             .setTitle('✨ ذكر الله')
             .setDescription(`**${randomDhikr}**`)
             .setColor('#5865F2')
+            .setTimestamp();
+
+        return interaction.reply({ embeds: [embed] });
+    }
+
+    // --- /dua command ---
+    if (commandName === 'dua') {
+        const pool = adhkar.duas;
+        const randomDua = pool[Math.floor(Math.random() * pool.length)];
+
+        const embed = new EmbedBuilder()
+            .setTitle('🤲 دعاء مستجاب')
+            .setDescription(`**${randomDua}**`)
+            .setColor('#1D8F6F')
             .setTimestamp();
 
         return interaction.reply({ embeds: [embed] });
