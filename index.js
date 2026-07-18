@@ -628,11 +628,13 @@ client.on('interactionCreate', async interaction => {
         saveSettings(guildId, 'channelId', channel.id);
         
         // Reset the periodic timer for this guild
-        lastAdhkarAlerts.set(guildId, Date.now());
+        const now = Date.now();
+        lastAdhkarAlerts.set(guildId, now);
+        lastDuaAlerts.set(guildId, now);
 
         const embed = new EmbedBuilder()
             .setTitle('✅ تم إعداد قناة التذكيرات')
-            .setDescription(`سيتم إرسال مواقيت الصلاة وتذكيرات الأذكار الدورية إلى القناة: <#${channel.id}>`)
+            .setDescription(`سيتم إرسال مواقيت الصلاة وتذكيرات الأذكار والأدعية الدورية إلى القناة: <#${channel.id}>`)
             .setColor('#1D8F6F');
 
         return interaction.reply({ embeds: [embed] });
